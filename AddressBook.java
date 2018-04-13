@@ -2,10 +2,10 @@
 // the address txt file it reads from must use commas as delimiter.
 
 // remaining things to do:
-// remove the need to load a txt file at the start
-// persist the selection menu until user chooses to quit
-// clean up main method so that it only calls other methods/classes
 // consolidate the Comparators into a single class. Maybe use case/switch?
+// if newBook is non-empty, prompt user to save current canvas onto a new file before loading a new file
+// add new menu option to allow user to display current canvas
+// create a way for user to search a specific entry by each of the Record class attributes
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -221,15 +221,11 @@ class emailSorter implements Comparator <Record>
 
 class Menu
 {
+	public static ArrayList <Record> newBook = new ArrayList <Record> ();	// public static variable allows the same ArrayList to be the "canvas" until the user decides to load a new one or start from scratch
+
 	public static int loadMenu() throws IOException
 	{
 		Scanner kb = new Scanner(System.in);
-		System.out.print("address book to load (must have \".txt\" extension): ");
-		String choice = kb.nextLine();
-		ArrayList <Record> newBook = Record.loadFromFile(choice);
-
-		// user can pick one of the following actions
-		System.out.println("\nCurrently loaded address book is: " + choice);
 		System.out.println("\t1) Load from file");
 		System.out.println("\t2) Save to file");
 		System.out.println("\t3) Add an entry");
@@ -241,11 +237,14 @@ class Menu
 
 		System.out.print("\nAction: ");
 
-		int action = kb.nextInt();
+		int action = Integer.parseInt(kb.nextLine());
 
 		if (action == 1)
 		{
-			System.out.println("coming soon.");
+			System.out.println("WARNING: any unsaved changes will be erased");
+			System.out.print("address book to load (must have \".txt\" extension): ");
+			String choice = kb.nextLine();
+			newBook = Record.loadFromFile(choice);
 		}
 		else if (action == 2)
 		{
@@ -298,7 +297,7 @@ class Menu
 		}
 		else if (action == 7)
 		{
-			System.out.println("coming soon");
+			System.out.println("search for entries coming soon");
 		}
 		else if (action == 8)
 		{
@@ -309,7 +308,8 @@ class Menu
 			System.out.println("Invalid menu option");
 		}
 
-		// Record.showRecord(newBook);
+		Record.showRecord(newBook);
+
 		return action;
 	}
 }
