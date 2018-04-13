@@ -219,10 +219,9 @@ class emailSorter implements Comparator <Record>
 	}
 }
 
-
-public class AddressBook
+class Menu
 {
-	public static void main (String[] args) throws IOException
+	public static int loadMenu() throws IOException
 	{
 		Scanner kb = new Scanner(System.in);
 		System.out.print("address book to load (must have \".txt\" extension): ");
@@ -303,13 +302,26 @@ public class AddressBook
 		}
 		else if (action == 8)
 		{
-			System.out.println("coming soon");
+			System.exit(0);
 		}
 		else
 		{
-			System.out.println("does nothing yet.");
+			System.out.println("Invalid menu option");
 		}
 
-		Record.showRecord(newBook);
+		// Record.showRecord(newBook);
+		return action;
+	}
+}
+
+public class AddressBook
+{
+	public static void main (String[] args) throws IOException
+	{
+		do
+		{
+			Menu.loadMenu();
+		}
+		while (Menu.loadMenu() != 8);
 	}
 }
