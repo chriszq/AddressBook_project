@@ -4,7 +4,6 @@
 // remaining things to do:
 // consolidate the Comparators into a single class. Maybe use case/switch?
 // if newBook is non-empty, prompt user to save current canvas onto a new file before loading a new file
-// add new menu option to allow user to display current canvas
 // create a way for user to search a specific entry by each of the Record class attributes
 
 import java.util.Scanner;
@@ -233,7 +232,8 @@ class Menu
 		System.out.println("\t5) Edit an existing entry");
 		System.out.println("\t6) Sort the address book");
 		System.out.println("\t7) Search for a specific entry");
-		System.out.println("\t8) Quit");
+		System.out.println("\t8) Display current addressbook");
+		System.out.println("\t9) Quit");
 
 		System.out.print("\nAction: ");
 
@@ -301,14 +301,16 @@ class Menu
 		}
 		else if (action == 8)
 		{
+			Record.showRecord(newBook);
+		}
+		else if (action == 9)
+		{
 			System.exit(0);
 		}
 		else
 		{
 			System.out.println("Invalid menu option");
 		}
-
-		Record.showRecord(newBook);
 
 		return action;
 	}
@@ -322,6 +324,6 @@ public class AddressBook
 		{
 			Menu.loadMenu();
 		}
-		while (Menu.loadMenu() != 8);
+		while (Menu.loadMenu() != 9);
 	}
 }
