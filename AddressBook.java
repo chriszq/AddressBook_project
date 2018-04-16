@@ -2,9 +2,8 @@
 // the address txt file it reads from must use commas as delimiter.
 
 // remaining things to do:
-// consolidate the Comparators into a single class. Maybe use case/switch?
-// if newBook is non-empty, prompt user to save current canvas onto a new file before loading a new file
-// create a way for user to search a specific entry by each of the Record class attributes
+// program should be capable of handling multiple address books
+// consider using ArrayList of ArrayLists to load multiple text files and then manipulate them
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -112,7 +111,7 @@ class Record
 		}
 		else
 		{
-			System.out.println("no such field");	// expand later
+			System.out.println("invalid field");
 		}
 
 		record.set(index, r);
@@ -131,7 +130,7 @@ class Record
 		}
 	}
 
-	public String getfirstName()
+	public String getFirstName()
 	{
 		return firstName;
 	}
@@ -182,7 +181,7 @@ class firstNameSorter implements Comparator <Record>
 {
 	public int compare(Record o1, Record o2)
 	{
-		return o1.getfirstName().compareTo(o2.getfirstName());
+		return o1.getFirstName().compareTo(o2.getFirstName());
 	}
 }
 
@@ -222,7 +221,7 @@ class Menu
 {
 	public static ArrayList <Record> newBook = new ArrayList <Record> ();	// public static variable allows the same ArrayList to be the "canvas" until the user decides to load a new one or start from scratch
 
-	public static int loadMenu() throws IOException
+	public static int loadMenu() throws IOException	// loads the main menu
 	{
 		Scanner kb = new Scanner(System.in);
 		System.out.println("\t1) Load from file");
@@ -231,7 +230,7 @@ class Menu
 		System.out.println("\t4) Remove an entry");
 		System.out.println("\t5) Edit an existing entry");
 		System.out.println("\t6) Sort the address book");
-		System.out.println("\t7) Search for a specific entry");
+		System.out.println("\t7) Search entries");
 		System.out.println("\t8) Display current addressbook");
 		System.out.println("\t9) Quit");
 
@@ -264,40 +263,11 @@ class Menu
 		}
 		else if (action == 6)
 		{
-			System.out.println("Which field to sort address book by: ");
-			System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
-			System.out.print("sort by: ");
-
-			int sortAction = kb.nextInt();
-
-			if (sortAction == 1)
-			{
-				Collections.sort(newBook, new firstNameSorter());
-			}
-			else if (sortAction == 2)
-			{
-				Collections.sort(newBook, new lastNameSorter());
-			}
-			else if (sortAction == 3)
-			{
-				Collections.sort(newBook, new phoneNumberSorter());
-			}
-			else if (sortAction == 4)
-			{
-				Collections.sort(newBook, new addressSorter());
-			}
-			else if (sortAction == 5)
-			{
-				Collections.sort(newBook, new emailSorter());
-			}
-			else
-			{
-				System.out.println("placeholder");
-			}
+			loadSortMenu();
 		}
 		else if (action == 7)
 		{
-			System.out.println("search for entries coming soon");
+			loadSearchMenu();
 		}
 		else if (action == 8)
 		{
@@ -313,6 +283,116 @@ class Menu
 		}
 
 		return action;
+	}
+
+	public static void loadSortMenu()	// loads the submenu for sorting address book records
+	{
+		Scanner kb = new Scanner(System.in);
+		System.out.println("Which field to sort address book by: ");
+		System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
+		System.out.print("sort by: ");
+
+		int sortAction = kb.nextInt();
+
+		if (sortAction == 1)
+		{
+			Collections.sort(newBook, new firstNameSorter());
+		}
+		else if (sortAction == 2)
+		{
+			Collections.sort(newBook, new lastNameSorter());
+		}
+		else if (sortAction == 3)
+		{
+			Collections.sort(newBook, new phoneNumberSorter());
+		}
+		else if (sortAction == 4)
+		{
+			Collections.sort(newBook, new addressSorter());
+		}
+		else if (sortAction == 5)
+		{
+			Collections.sort(newBook, new emailSorter());
+		}
+		else
+		{
+			System.out.println("invalid field");
+		}
+	}
+
+	public static void loadSearchMenu()	// loads the sub menu for searching address book records
+	{
+		Scanner kb = new Scanner(System.in);
+
+		System.out.println("Select field to search by: ");
+		System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
+		System.out.print("search by: ");
+
+		int searchField = Integer.parseInt(kb.nextLine());
+
+		System.out.print("search records by this field beginning with: ");
+
+		String criteria = kb.nextLine();
+
+		searchRecord(searchField, criteria);
+	}
+
+	public static void searchRecord(int field, String str)
+	{
+		switch (field)	// not sure if using if-else statements and switch-case makes any difference here.
+		{
+			case 1:
+			for (int i = 0; i < newBook.size(); i ++)
+			{
+				if (newBook.get(i).getFirstName().startsWith(str))
+				{
+					Record.showElt(newBook, i);
+				}
+			}
+			break;
+
+			case 2:
+			for (int i = 0; i < newBook.size(); i ++)
+			{
+				if (newBook.get(i).getLastName().startsWith(str))
+				{
+					Record.showElt(newBook, i);
+				}
+			}
+			break;
+
+			case 3:
+			for (int i = 0; i < newBook.size(); i ++)
+			{
+				if (newBook.get(i).getPhoneNumber().startsWith(str))
+				{
+					Record.showElt(newBook, i);
+				}
+			}
+			break;
+
+			case 4:
+			for (int i = 0; i < newBook.size(); i ++)
+			{
+				if (newBook.get(i).getAddess().startsWith(str))
+				{
+					Record.showElt(newBook, i);
+				}
+			}
+			break;
+
+			case 5:
+			for (int i = 0; i < newBook.size(); i ++)
+			{
+				if (newBook.get(i).getEmail().startsWith(str))
+				{
+					Record.showElt(newBook, i);
+				}
+			}
+			break;
+
+			default: System.out.println("invalid criteria");
+		}
 	}
 }
 
