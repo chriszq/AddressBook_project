@@ -1,10 +1,8 @@
-// Caution: care must be taken with the input text file as uppercase, lowercase, spaces, etc. will be taken into consideration for sorting
-// the address txt file it reads from must use commas as delimiter.
+// Caution: the address txt file it reads from must use commas delimiter
 
 // remaining things to do:
-// copy entries from address book A to address book B
 // deal with invalid user inputs
-// ignore upper/lower case when sorting
+// no matches after search
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ class Record
 		return phoneNumber;
 	}
 
-	public String getAddess()
+	public String getAddress()
 	{
 		return address;
 	}
@@ -157,6 +155,11 @@ class Record
 		pw.close();
 	}
 
+	public static void copyRecord(ArrayList <Record> arrList1, ArrayList <Record> arrList2, int x)
+	{
+		arrList2.add(arrList1.get(x));	// adds element index x from arrList1 to arrList2
+	}
+
 	public static void showElt (ArrayList <Record> record, int x)	// prints the entry number (index) of the element along with the rest of the Record object
 	{
 		System.out.println("Entry number: " + x + "\n" + record.get(x));
@@ -181,7 +184,7 @@ class firstNameSorter implements Comparator <Record>
 {
 	public int compare(Record o1, Record o2)
 	{
-		return o1.getFirstName().compareTo(o2.getFirstName());
+		return o1.getFirstName().toLowerCase().compareTo(o2.getFirstName().toLowerCase());
 	}
 }
 
@@ -189,7 +192,7 @@ class lastNameSorter implements Comparator <Record>
 {
 	public int compare(Record o1, Record o2)
 	{
-		return o1.getLastName().compareTo(o2.getLastName());
+		return o1.getLastName().toLowerCase().compareTo(o2.getLastName().toLowerCase());
 	}
 }
 
@@ -205,7 +208,7 @@ class addressSorter implements Comparator <Record>
 {
 	public int compare(Record o1, Record o2)
 	{
-		return o1.getAddess().compareTo(o2.getAddess());
+		return o1.getAddress().toLowerCase().compareTo(o2.getAddress().toLowerCase());
 	}
 }
 
@@ -213,7 +216,7 @@ class emailSorter implements Comparator <Record>
 {
 	public int compare(Record o1, Record o2)
 	{
-		return o1.getEmail().compareTo(o2.getEmail());
+		return o1.getEmail().toLowerCase().compareTo(o2.getEmail().toLowerCase());
 	}
 }
 
@@ -259,11 +262,12 @@ class Menu
 		System.out.println("\t3) Add entry");
 		System.out.println("\t4) Remove entry");
 		System.out.println("\t5) Edit entry");
-		System.out.println("\t6) Sort entries");
-		System.out.println("\t7) Search entries");
-		System.out.println("\t8) Display an address book");
-		System.out.println("\t9) Display loaded address books");
-		System.out.println("\t10) Quit");
+		System.out.println("\t6) Copy entry");
+		System.out.println("\t7) Sort entries");
+		System.out.println("\t8) Search entries");
+		System.out.println("\t9) Display an address book");
+		System.out.println("\t10) Display loaded address books");
+		System.out.println("\t11) Quit");
 		System.out.print("\nAction: ");
 
 		int action = Integer.parseInt(kb.nextLine());
@@ -271,29 +275,27 @@ class Menu
 
 		if (action == 0)
 		{
-			System.out.print("name of new address book (must have \".txt\" extension): ");
+			System.out.print("name of new address book: ");
 			String newBookName = kb.nextLine();
 			BookShelf.addToShelf(newBookName, new ArrayList <Record>());	// new empty address books are immediately added to shelf for ease of use
 		}
 		else if (action == 1)
 		{
-			System.out.print("address book to load (must have \".txt\" extension): ");
+			System.out.print("address book to load: ");
 			String choice = kb.nextLine();
 			BookShelf.addToShelf(choice, Record.loadFromFile(choice));
 		}
 		else if (action == 2)
 		{
-			System.out.println("select addressbook to save: ");
 			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
+			System.out.print("\nselect addressbook number to save: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
 			Record.saveFile(bookShelf.get(bookChoice).bookName, bookShelf.get(bookChoice).book);
 		}
 		else if (action == 3)
 		{
-			System.out.println("select address book to add entry to: ");
 			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
+			System.out.print("\nselect address book number to add entry to: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
 			Record.addEntry(bookShelf.get(bookChoice).book);
 		}
@@ -303,6 +305,7 @@ class Menu
 			BookShelf.showBookShelf(bookShelf);
 			System.out.print("\naddress book number: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
+			Record.showRecord(bookShelf.get(bookChoice).book);
 			Record.removeEntry(bookShelf.get(bookChoice).book);
 		}
 		else if (action == 5)
@@ -311,17 +314,30 @@ class Menu
 			BookShelf.showBookShelf(bookShelf);
 			System.out.print("\naddress book number: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
+			Record.showRecord(bookShelf.get(bookChoice).book);
 			Record.editEntry(bookShelf.get(bookChoice).book);
 		}
 		else if (action == 6)
 		{
-			System.out.println("select address book to sort: ");
 			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
+			System.out.print("\nselect address book number to copy from:");
+			bookChoice = Integer.parseInt(kb.nextLine());
+			Record.showRecord(bookShelf.get(bookChoice).book);
+			System.out.print("select entry number to copy: ");
+			int entryNo = Integer.parseInt(kb.nextLine());
+			BookShelf.showBookShelf(bookShelf);
+			System.out.print("\nselect address book number to copy to:");
+			int bookChoice1 = Integer.parseInt(kb.nextLine());
+			Record.copyRecord(bookShelf.get(bookChoice).book, bookShelf.get(bookChoice1).book, entryNo);
+		}
+		else if (action == 7)
+		{
+			BookShelf.showBookShelf(bookShelf);
+			System.out.print("\nselect address book number to sort: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
 			loadSortMenu(bookShelf.get(bookChoice).book);
 		}
-		else if (action == 7)
+		else if (action == 8)
 		{
 			System.out.println("select address book to search: ");
 			BookShelf.showBookShelf(bookShelf);
@@ -329,20 +345,19 @@ class Menu
 			bookChoice = Integer.parseInt(kb.nextLine());
 			loadSearchMenu(bookShelf.get(bookChoice).book);
 		}
-		else if (action == 8)
+		else if (action == 9)
 		{
-			System.out.println("select address book to display: ");
 			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
+			System.out.print("\nselect address book number to display: ");
 			bookChoice = Integer.parseInt(kb.nextLine());
 			Record.showRecord(bookShelf.get(bookChoice).book);
 		}
-		else if (action == 9)
+		else if (action == 10)
 		{
 			System.out.println("currently loaded address books:");
 			BookShelf.showBookShelf(bookShelf);
 		}
-		else if (action == 10)
+		else if (action == 11)
 		{
 			System.exit(0);
 		}
@@ -357,9 +372,9 @@ class Menu
 	public static void loadSortMenu(ArrayList <Record> arrList)	// loads the submenu for sorting address book records
 	{
 		Scanner kb = new Scanner(System.in);
-		System.out.println("select field to sort address book by: ");
+
 		System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
-		System.out.print("field number: ");
+		System.out.print("\nselect field number to sort address book by: ");
 
 		int sortAction = kb.nextInt();
 
@@ -393,9 +408,8 @@ class Menu
 	{
 		Scanner kb = new Scanner(System.in);
 
-		System.out.println("Select field to search by: ");
 		System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
-		System.out.print("search by: ");
+		System.out.print("Select field number to search by: ");
 
 		int searchField = Integer.parseInt(kb.nextLine());
 
@@ -408,12 +422,14 @@ class Menu
 
 	public static void searchRecord(int field, String str, ArrayList <Record> arrList)
 	{
+		str = str.toLowerCase();	// the search funtionality is non case sensitive (both ways)
+
 		switch (field)	// not sure if using if-else statements and switch-case makes any difference here.
 		{
 			case 1:
 			for (int i = 0; i < arrList.size(); i ++)
 			{
-				if (arrList.get(i).getFirstName().startsWith(str))
+				if (arrList.get(i).getFirstName().toLowerCase().startsWith(str))
 				{
 					Record.showElt(arrList, i);
 				}
@@ -423,7 +439,7 @@ class Menu
 			case 2:
 			for (int i = 0; i < arrList.size(); i ++)
 			{
-				if (arrList.get(i).getLastName().startsWith(str))
+				if (arrList.get(i).getLastName().toLowerCase().startsWith(str))
 				{
 					Record.showElt(arrList, i);
 				}
@@ -433,7 +449,7 @@ class Menu
 			case 3:
 			for (int i = 0; i < arrList.size(); i ++)
 			{
-				if (arrList.get(i).getPhoneNumber().startsWith(str))
+				if (arrList.get(i).getPhoneNumber().toLowerCase().startsWith(str))
 				{
 					Record.showElt(arrList, i);
 				}
@@ -443,7 +459,7 @@ class Menu
 			case 4:
 			for (int i = 0; i < arrList.size(); i ++)
 			{
-				if (arrList.get(i).getAddess().startsWith(str))
+				if (arrList.get(i).getAddress().toLowerCase().startsWith(str))
 				{
 					Record.showElt(arrList, i);
 				}
@@ -453,7 +469,7 @@ class Menu
 			case 5:
 			for (int i = 0; i < arrList.size(); i ++)
 			{
-				if (arrList.get(i).getEmail().startsWith(str))
+				if (arrList.get(i).getEmail().toLowerCase().startsWith(str))
 				{
 					Record.showElt(arrList, i);
 				}
@@ -473,6 +489,6 @@ public class AddressBook
 		{
 			Menu.loadMenu();
 		}
-		while (Menu.loadMenu() != 10);
+		while (Menu.loadMenu() != 11);
 	}
 }
