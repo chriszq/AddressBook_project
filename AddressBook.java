@@ -1,9 +1,5 @@
 // Caution: the address txt file it reads from must use commas delimiter
 
-// remaining things to do:
-// deal with invalid user inputs
-// no matches after search
-
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -281,9 +277,16 @@ class Menu
 		}
 		else if (action == 1)
 		{
-			System.out.print("address book to load: ");
-			String choice = kb.nextLine();
-			BookShelf.addToShelf(choice, Record.loadFromFile(choice));
+			try
+			{
+				System.out.print("address book to load: ");
+				String choice = kb.nextLine();
+				BookShelf.addToShelf(choice, Record.loadFromFile(choice));
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid file");
+			}
 		}
 		else if (action == 2)
 		{
@@ -294,63 +297,127 @@ class Menu
 		}
 		else if (action == 3)
 		{
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\nselect address book number to add entry to: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			Record.addEntry(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book number to add entry to: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				Record.addEntry(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 4)
 		{
-			System.out.println("select address book to remove entry from: ");
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			Record.showRecord(bookShelf.get(bookChoice).book);
-			Record.removeEntry(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book number to remove entry from: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				Record.showRecord(bookShelf.get(bookChoice).book);
+				Record.removeEntry(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 5)
 		{
-			System.out.println("select address book to edit entry from: ");
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			Record.showRecord(bookShelf.get(bookChoice).book);
-			Record.editEntry(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book to edit entry from: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				Record.showRecord(bookShelf.get(bookChoice).book);
+				Record.editEntry(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
+
 		}
 		else if (action == 6)
 		{
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\nselect address book number to copy from:");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			Record.showRecord(bookShelf.get(bookChoice).book);
-			System.out.print("select entry number to copy: ");
-			int entryNo = Integer.parseInt(kb.nextLine());
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\nselect address book number to copy to:");
-			int bookChoice1 = Integer.parseInt(kb.nextLine());
-			Record.copyRecord(bookShelf.get(bookChoice).book, bookShelf.get(bookChoice1).book, entryNo);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book number to copy from:");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				String temp = bookShelf.get(bookChoice).bookName;	// as the book number does not get checked until the 3rd try statement, this will act as a make-shift early check
+
+				try
+				{
+					Record.showRecord(bookShelf.get(bookChoice).book);
+					System.out.print("select entry number to copy: ");
+					int entryNo = Integer.parseInt(kb.nextLine());	
+					temp = bookShelf.get(bookChoice).book.get(entryNo).getFirstName();	// as the entry number does not get checked until the 3rd try statement, this will act as a make-shift early check
+					try
+					{
+						BookShelf.showBookShelf(bookShelf);
+						System.out.print("\nselect address book number to copy to:");
+						int bookChoice1 = Integer.parseInt(kb.nextLine());
+						Record.copyRecord(bookShelf.get(bookChoice).book, bookShelf.get(bookChoice1).book, entryNo);	
+					}
+					catch (Exception e)
+					{
+						System.out.println("invalid address book");
+					}
+				}
+				catch (Exception e)
+				{
+					System.out.println("invalid entry");
+				}
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 7)
 		{
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\nselect address book number to sort: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			loadSortMenu(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book number to sort: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				loadSortMenu(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 8)
 		{
-			System.out.println("select address book to search: ");
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\naddress book number: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			loadSearchMenu(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book to search: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				loadSearchMenu(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 9)
 		{
-			BookShelf.showBookShelf(bookShelf);
-			System.out.print("\nselect address book number to display: ");
-			bookChoice = Integer.parseInt(kb.nextLine());
-			Record.showRecord(bookShelf.get(bookChoice).book);
+			try
+			{
+				BookShelf.showBookShelf(bookShelf);
+				System.out.print("\nselect address book number to display: ");
+				bookChoice = Integer.parseInt(kb.nextLine());
+				Record.showRecord(bookShelf.get(bookChoice).book);
+			}
+			catch (Exception e)
+			{
+				System.out.println("invalid address book");
+			}
 		}
 		else if (action == 10)
 		{
@@ -411,13 +478,17 @@ class Menu
 		System.out.println("1) first name 2) last name 3) phone no. 4) address 5) email");
 		System.out.print("Select field number to search by: ");
 
-		int searchField = Integer.parseInt(kb.nextLine());
-
-		System.out.print("search records by this field beginning with: ");
-
-		String criteria = kb.nextLine();
-
-		searchRecord(searchField, criteria, arrList);
+		try
+		{
+			int searchField = Integer.parseInt(kb.nextLine());
+			System.out.print("search records by this field beginning with: ");
+			String criteria = kb.nextLine();
+			searchRecord(searchField, criteria, arrList);	
+		}
+		catch (Exception e)
+		{
+			System.out.println("invalid criteria");
+		}
 	}
 
 	public static void searchRecord(int field, String str, ArrayList <Record> arrList)
@@ -476,7 +547,7 @@ class Menu
 			}
 			break;
 
-			default: System.out.println("invalid criteria");
+			default: System.out.println("no matches");
 		}
 	}
 }
